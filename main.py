@@ -15,14 +15,14 @@ engine = config['appsearch']['engine_name']
 
 @app.route("/")
 def home():
-    data = client.search(engine_name=engine, query="", body={"page":{"size":25}})
+    data = client.search(engine_name=engine, query="", body={"page":{"size":48}})
     return render_template("CineFlix/index.html", data=data)
 
 
 @app.route("/search", methods=['GET'])
 def search():
     search = request.args.get('q')
-    d = client.search(engine_name=engine, query=search, body={"page":{"size":25}})
+    d = client.search(engine_name=engine, query=search, body={"page":{"size":48}})
     response = jsonify(d['results'])
     response.headers.add('access-control-allow-origin', '*')
     response.headers.add('access-control-allow-methods', 'get, post')
@@ -31,7 +31,7 @@ def search():
 @app.route("/test", methods=['GET'])
 def test():
     search = ""
-    d = client.search(engine_name=engine, query="", body={"page":{"size":25},"sort":{"imdb_rating":"desc"}})
+    d = client.search(engine_name=engine, query="", body={"page":{"size":48},"sort":{"imdb_rating":"desc"}})
     response = jsonify(d['results'])
     response.headers.add('access-control-allow-origin', '*')
     response.headers.add('access-control-allow-methods', 'get, post')

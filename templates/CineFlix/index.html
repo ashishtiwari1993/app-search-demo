@@ -206,39 +206,6 @@
         -->
         <div id="movie-list" class="movies-grid">
 
-          <div class="movie-card">
-
-            <div class="card-head">
-                <img src="{{ url_for('static', filename='./assets/images/movies/red-notice.jpg') }}" alt="" class="card-img">
-
-              <div class="card-overlay">
-
-                <div class="bookmark">
-                  <ion-icon name="bookmark-outline"></ion-icon>
-                </div>
-
-                <div class="rating">
-                  <ion-icon name="star-outline"></ion-icon>
-                  <span>6.4</span>
-                </div>
-
-                <div class="play">
-                  <ion-icon name="play-circle-outline"></ion-icon>
-                </div>
-
-              </div>
-            </div>
-
-            <div class="card-body">
-              <h3 class="card-title">Red Notice</h3>
-
-              <div class="card-info">
-                <span class="genre">Action/Comedy</span>
-                <span class="year">2021</span>
-              </div>
-            </div>
-
-          </div>
         </div>
 
         <!--
@@ -536,29 +503,33 @@ $(document).ready(function() {
 $("#search").keyup(function(){
 
     var search = $('#search').val();
-    if(search == ""){
-        return false;
-    }
-
     search_string(search)
 
 });
 
+var request = null;
+
 function search_string(search){
 
-    var request = $.ajax({
+    $("#movie-list").html('');
+    request = $.ajax({
       url: "http://localhost:5000/search?q="+search,
-      method: "GET"
+      method: "GET",
+      beforeSend: function() {
+          if(request != null){
+            request.abort();
+          }
+      }
     });
+
 
     request.done(function( data ) {
         if(data == ""){
             return false;
         }
-        $("#movie-list").html('');
         i = 0;
         $.each(data, function( key, value ) {
-            $('#movie-list').append('        <div id="movie-list" class="movies-grid">          <div class="movie-card">            <div class="card-head">                <img src="'+value.poster_path.raw+'" alt="" class="card-img">              <div class="card-overlay">                <div class="bookmark">                  <ion-icon name="bookmark-outline"></ion-icon>                </div>                <div class="rating">                  <ion-icon name="star-outline"></ion-icon>                  <span>'+value.imdb_rating.raw+'</span>                </div>                <div class="play">                  <ion-icon name="play-circle-outline"></ion-icon>                </div>              </div>            </div>            <div class="card-body">              <h3 class="card-title">'+value.original_title.raw+'</h3>              <div class="card-info">                <span class="genre">'+value.genres.raw+'</span>                <span class="year">'+value.year_of_release.raw+'</span>              </div>            </div>          </div>        </div>');
+            $('#movie-list').append('         <div class="movie-card">            <div class="card-head">                <img src="'+value.poster_path.raw+'" alt="" class="card-img">              <div class="card-overlay">                <div class="bookmark">                  <ion-icon name="bookmark-outline"></ion-icon>                </div>                <div class="rating">                  <ion-icon name="star-outline"></ion-icon>                  <span>'+value.imdb_rating.raw+'</span>                </div>                <div class="play">                  <ion-icon name="play-circle-outline"></ion-icon>                </div>              </div>            </div>            <div class="card-body">              <h3 class="card-title">'+value.original_title.raw+'</h3>              <div class="card-info">                <span class="genre">'+value.genres.raw+'</span>                <span class="year">'+value.year_of_release.raw+'</span>              </div>            </div>          </div>        ');
 
             i++;
         });
